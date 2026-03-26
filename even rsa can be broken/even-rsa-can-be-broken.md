@@ -1,41 +1,14 @@
-\begin{document}
-When we run instance we get the output :
 
-
-----------------------TOPIC TO BE DICUSSED----------------------
-RSA Algorithm :
-
-1. Workflow:
-    There are two keys, public key and private key  
-    Public key is exposed to everyone, and is used for encrypting the data
-    Private key isnt exposed to everyone, and is used for decrypting the data
-
-2. How it works:
-    1.Public key generation:
-        Lets take two prime numbers, p and q
-        Calculate N = p*q
-        Calculate the euler's totient function
-
-NOTE: Euler's totient function?
-= > It is a function that takes in ONE value and outputs all the coprimes with that number
-= > It is represented by phi(n)
-
-
-\end{document}
-
-
-
-# [Challenge Name] — [CTF Name]
 
 ## Challenge Info
 
-| Field      | Details              |
-|------------|----------------------|
-| Category   | Cryptography         |
-| Difficulty | Easy                 |
-| Points     | 000                  |
-| Author     | Michael Crotty       |
-| Flag       | `picoCTF{...}`       |
+| Field      | Details                               |
+|------------|---------------------------------------|
+| Category   | Cryptography                          |
+| Difficulty | Easy                                  |
+| Points     | 000                                   |
+| Author     | Michael Crotty                        |
+| Flag       | `picoCTF{tw0_1$_pr!m341c6ed35}`       |
 
 ---
 
@@ -77,7 +50,6 @@ cyphertext: 10228938694671901258936160506499830794539742460303597448883155063733
 
 1. Noticed the encryption used small even prime number 2 
 2. Divided N by 2 to get the other number
-3. 
 
 ---
 
@@ -87,26 +59,63 @@ Step-by-step breakdown of what actually worked.
 
 ```python
 
-N=22228565033374419386210276060739184651381287303738904053191115893339305990558340889505285285022750369440873429421146749316596107826222950220702588186290402
-e= 65537
-cyphertext=1022893869467190125893616050649983079453974246030359744888315506373350012868214118150105481709393824756730226746131217968200877521599249821181121929741163
 
-/*Factor of N*/
-p = 2
-q = N/2
+print("Note : This only works for picoCTF puzxzle not for real RSA systems")
+n =int(input("Enter the value of N " )) 
+e = int(input("Enter the value of e "))
 
-/*Since the message is already encrypted, and we have got the e, we would just find the deccryption key or d*/
+cyphertext= int(input("Enter the value for cyphertext "))
+def decode(n,e,cypertext):
+    #Factors of N
+    p = 2
+    q = n//2
 
-/*
-For finding the decryption key, Extended Euclidean Algorithm is used
-*/
+    #Since the message is already encrypted, and we have got the e, we would just find the deccryption key or d
 
+    #For finding the decryption key
+
+    # Calculate Euler's totient function phi(n)= (p - 1) * (q - 1).
+
+    phi = (p-1)*(q-1)
+    phi = int(phi)
+
+    d = pow(e, -1, phi)
+
+    #Decrypting the message's to a number
+
+    decrypted_cyperNo = pow(cyphertext,d,n)
+
+
+    #converting the decrypted message into binary number format 
+
+    binary_decryptedNo = format(decrypted_cyperNo, 'b')
+
+    #Chunking the binary bits to grps of 8
+
+    # for that chunking we need how many grps, so to calculate how many grps we give this command
+
+    num_bytes = (decrypted_cyperNo.bit_length() + 7) // 8
+
+    # variable.to_bytes(num , 'big') = >  converts variables into num bytes using big-endian order.
+
+    #big endian order = > it reads stuff from high to low, i.e desending order
+
+    #other parameter is little endian order = > it reads stuff from low to high
+
+    result_bytes = decrypted_cyperNo.to_bytes(num_bytes, 'big')
+
+    # decode() = > it decodes the result_bytes, which are in decimal number format
+    # like 112 to 'p'
+    print(result_bytes.decode())
+
+
+decode(n,e,cyphertext)
 
 ```
 
 **Output:**
 ```
-picoCTF{...}
+picoCTF{tw0_1$_pr!m341c6ed35}
 ```
 
 ---
@@ -114,13 +123,11 @@ picoCTF{...}
 ## Flag
 
 ```
-picoCTF{example_flag_here}
+picoCTF{tw0_1$_pr!m341c6ed35}
 ```
 
 ---
 
 ## Lessons Learned
 
-- What concept this challenge tested
-- What you'd do faster next time
-- Any tool or trick you learned
+- RSA encryption decryption
